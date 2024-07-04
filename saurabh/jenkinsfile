@@ -44,7 +44,24 @@ pipeline {
                 sudo docker push 767397910357.dkr.ecr.us-east-2.amazonaws.com/repo-12:latest
                 ''' 
               }      
-        }           
+        } 
+
+      stage('docker hub push') {
+            steps{
+               
+	       sh'''
+	       sudo docker tag repo-12 ayushxd/pipe1:1 
+	       sudo docker login -u ayushxd -p Ayush@12345
+	       sudo docker push ayushxd/pipe1:1
+	       '''
+
+    
+
+
+            }
+       }
+
+
         
     }
     
