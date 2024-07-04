@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('git pull') {
+            steps{
+                 git branch: 'main', url: 'https://github.com/SanjayTomar22/pikachu.git'       
+            }      
+       } 
+        
+        stage('docker install') {
+            steps{
+                sh'''
+                 sudo yum install docker -y
+                 sudo systemctl start docker
+                 sudo systemctl enable docker
+                 '''
+            }      
+       } 
+       stage('build image') {
+            steps{
+                 sh'''
+                 sudo docker build -t repo-12 .
+                 '''
+            }      
+       }
+       
+       stage('push to ecr') {
+            steps{
+                sh'''
+                sudo aws ecr get-login-password --region us-east-2 | sudo docker login --username AWS --password-stdin 767397910357.dkr.ecr.us-east-2.amazonaws.com
+                sudo docker tag repo-12:latest 767397910357.dkr.ecr.us-east-2.amazonaws.com/repo-12:latest
+                sudo docker push 767397910357.dkr.ecr.us-east-2.amazonaws.com/repo-12:latest
+                ''' 
+              }      
+        }           
+        
+    }
+    
+   }
+    
